@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiayk.xspringboot.dao.UserInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.xiayk.xspringboot.model.user.UserInfo" >
+    <id column="iid" property="iid" jdbcType="INTEGER" />
+    <id column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="addres" property="addres" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="job" property="job" jdbcType="VARCHAR" />
+    <result column="QQ" property="qq" jdbcType="VARCHAR" />
+    <result column="other" property="other" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    iid, uid, addres, sex, ip, job, QQ, other
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.xiayk.xspringboot.model.user.UserInfoKey" >
+    select
+    <include refid="Base_Column_List" />
+    from userinfo
+    where 1 = 1
+      and uid = #{uid,jdbcType=INTEGER}
+  </select>
+
+  <select id="getUsers" resultType="com.xiayk.xspringboot.model.user.User" parameterType="Map">
+    SELECT
+    u.uid,u.username,u.password,u.NICKNAME,u.email,i.addres,i.sex,i.ip,i.job,u.role,i.other,u.phonenum,u.ucode
+     FROM userinfo i inner join user u where i.uid = u.uid
+     limit #{page,jdbcType=INTEGER},#{limit,jdbcType=INTEGER};
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.xiayk.xspringboot.model.user.UserInfoKey" >
+    delete from userinfo
+    where uid = #{uid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xiayk.xspringboot.model.user.User" >
+    insert into userinfo (iid, uid, addres,
+      sex, ip, job, QQ,
+      other)
+    values (#{iid,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{addres,jdbcType=VARCHAR},
+      #{sex,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{job,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR},
+      #{other,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiayk.xspringboot.model.user.UserInfo" >
+    insert into userinfo
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="iid != null" >
+        iid,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="addres != null" >
+        addres,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="ip != null" >
+        ip,
+      </if>
+      <if test="job != null" >
+        job,
+      </if>
+      <if test="qq != null" >
+        QQ,
+      </if>
+      <if test="other != null" >
+        other,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="iid != null" >
+        #{iid,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="addres != null" >
+        #{addres,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="job != null" >
+        #{job,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null" >
+        #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="other != null" >
+        #{other,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiayk.xspringboot.model.user.UserInfo" >
+    update userinfo
+    <set >
+      <if test="addres != null" >
+        addres = #{addres,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="job != null" >
+        job = #{job,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null" >
+        QQ = #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="other != null" >
+        other = #{other,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where uid = #{uid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiayk.xspringboot.model.user.UserInfo" >
+    update userinfo
+    set addres = #{addres,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      job = #{job,jdbcType=VARCHAR},
+      QQ = #{qq,jdbcType=VARCHAR},
+      other = #{other,jdbcType=VARCHAR}
+    where iid = #{iid,jdbcType=INTEGER}
+      and uid = #{uid,jdbcType=INTEGER}
+  </update>
+</mapper>

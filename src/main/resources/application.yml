@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://xiayk.cn:3306/xweb?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true
+    username: root
+    password: xiayk.mysql
+  profiles:
+    active: dev
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+#  main:
+#    allow-bean-definition-overriding: true
+
+mybatis:
+  mapper-locations: classpath:mapping/*.xml
+
+
+
