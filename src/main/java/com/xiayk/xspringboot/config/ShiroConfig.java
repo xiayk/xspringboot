@@ -74,4 +74,5 @@ public class ShiroConfig {
         securityManager.setRealm(customRealm);
         return securityManager;
     }
+
 }

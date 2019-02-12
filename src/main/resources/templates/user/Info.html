@@ -5,6 +5,18 @@
     <title th:text="${session.user.username}"></title>
 </head>
 <body>
-<p th:text="${user.username}"></p>
+<h2>用户信息</h2>
+<div>
+    <p>ID:<span th:text="${user.uid}"></span></p>
+    <p>账号
+        :<span th:text="${user.username}"></span></p>
+    <p>昵称:<span th:text="${user.nickname}"></span></p>
+    <p>地址:<span th:text="${user.addres}"></span></p>
+    <p>电话:<span th:text="${user.phoneNum}"></span></p>
+    <p>性别:<span th:text="${user.sex}"></span></p>
+    <p>邮箱:<span th:text="${user.email}"></span></p>
+    <p>头像:<span th:text="${user.headurl}"></span></p>
+    <p>备注:<span th:text="${user.other}"></span></p>
+</div>
 </body>
 </html>

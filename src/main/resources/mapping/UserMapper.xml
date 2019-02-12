@@ -10,133 +10,126 @@
     <result column="phonenum" property="phoneNum" jdbcType="VARCHAR" />
     <result column="NICKNAME" property="nickname" jdbcType="VARCHAR" />
     <result column="role" property="role" jdbcType="VARCHAR" />
+    <result column="addres" property="addres" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="job" property="job" jdbcType="VARCHAR" />
+    <result column="QQ" property="qq" jdbcType="VARCHAR" />
+    <result column="other" property="other" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    uid, password, ucode, username, email, phonenum, NICKNAME, role
+    u.uid, u.password, u.ucode, u.username, u.email, u.phonenum, u.NICKNAME, u.role
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <sql id="Base_Column_List_userinfo" >
+    i.iid, i.addres, i.sex, i.ip, i.job, i.QQ, i.other, i.headurl
+  </sql>
+
+  <!--1,通过uid查找用户信息 userinfo and user 两表-->
+  <select id="findUserByUid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select
-    <include refid="Base_Column_List" />
-    from user
-    where uid = #{uid,jdbcType=INTEGER}
+    <include refid="Base_Column_List" />,
+    <include refid="Base_Column_List_userinfo" />
+    from userinfo i inner join user u
+    where u.uid = i.uid
+    and u.uid = #{uid,jdbcType=INTEGER}
   </select>
-  <select id="getUserConut" resultType="java.lang.Integer">
-    select count(*) from user
+
+  <!--2,分页获取所有用户信息 userinfo and user 表-->
+  <select id="getUsersLimit" resultType="com.xiayk.xspringboot.model.user.User" parameterType="Map">
+    select
+    <include refid="Base_Column_List" />,
+    <include refid="Base_Column_List_userinfo" />
+    from userinfo i inner join user u
+    where u.uid = i.uid
+    limit #{page,jdbcType=INTEGER},#{limit,jdbcType=INTEGER};
   </select>
+
+  <!--3,通过用户名查找用户 (登录)-->
   <select id="findUserByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT
-    <include refid="Base_Column_List" />
-    from user
-    where username = #{username, jdbcType=VARCHAR}
+    select
+    <include refid="Base_Column_List" />,
+    <include refid="Base_Column_List_userinfo" />
+    from userinfo i inner join user u
+    where u.uid = i.uid
+    and username = #{username, jdbcType=VARCHAR};
   </select>
-    <select id="findUsers" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List" />
-        FROM user
-    </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+
+  <!--4,查找所有用户 user表-->
+  <select id="getUsers" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />,
+    <include refid="Base_Column_List_userinfo" />
+    from userinfo i inner join user u
+    where u.uid = i.uid;
+  </select>
+
+  <!--5,通过uid删除用户 user 表-->
+  <delete id="delUserByUid" parameterType="java.lang.Integer" >
     delete from user
     where uid = #{uid,jdbcType=INTEGER}
   </delete>
+
+  <!--6,通过uid删除用户 user 表-->
+  <delete id="delUserByUsername" parameterType="java.lang.Integer" >
+    delete from user
+    where username = #{username,jdbcType=VARCHAR};
+  </delete>
+
+  <!--7,添加用户 user 表-->
   <insert id="insert" parameterType="com.xiayk.xspringboot.model.user.User" >
     insert into user (uid, password, ucode,
       username, email, phonenum,
       NICKNAME, role)
     values (#{uid,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, #{ucode,jdbcType=VARCHAR},
       #{username,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{phoneNum,jdbcType=VARCHAR},
-      #{nickname,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR})
+      #{nickname,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR});
   </insert>
-  <insert id="insertSelective" parameterType="com.xiayk.xspringboot.model.user.User" >
-    insert into user
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="uid != null" >
-        uid,
-      </if>
-      <if test="password != null" >
-        password,
-      </if>
+
+  <!--8,修改用户密码-->
+  <update id="updatePass" parameterType="com.xiayk.xspringboot.model.user.User" >
+    update user set password = #{password,jdbcType=VARCHAR}
+    where username = #{username,jdbcType=VARCHAR}
+  </update>
+
+  <!--9,修改用户信息-->
+  <update id="updateUserByUsername" parameterType="com.xiayk.xspringboot.model.user.User" >
+    update user u inner join userinfo i
+    <set>
       <if test="ucode != null" >
-        ucode,
-      </if>
-      <if test="username != null" >
-        username,
+        u.ucode = #{ucode,jdbcType=VARCHAR},
       </if>
       <if test="email != null" >
-        email,
+        u.email = #{email,jdbcType=VARCHAR},
       </if>
       <if test="phoneNum != null" >
-        phonenum,
+        u.phonenum = #{phoneNum,jdbcType=VARCHAR},
       </if>
       <if test="nickname != null" >
-        NICKNAME,
+        u.NICKNAME = #{nickname,jdbcType=VARCHAR},
       </if>
       <if test="role != null" >
-        role,
+        u.role = #{role,jdbcType=VARCHAR},
       </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="uid != null" >
-        #{uid,jdbcType=INTEGER},
+      <if test="addres != null" >
+        i.addres = #{addres,jdbcType=VARCHAR},
       </if>
-      <if test="password != null" >
-        #{password,jdbcType=VARCHAR},
+      <if test="sex != null" >
+        i.sex = #{sex,jdbcType=VARCHAR},
       </if>
-      <if test="ucode != null" >
-        #{ucode,jdbcType=VARCHAR},
+      <if test="ip != null" >
+        i.ip = #{ip,jdbcType=VARCHAR},
       </if>
-      <if test="username != null" >
-        #{username,jdbcType=VARCHAR},
+      <if test="job != null" >
+        i.job = #{job,jdbcType=VARCHAR},
       </if>
-      <if test="email != null" >
-        #{email,jdbcType=VARCHAR},
+      <if test="qq != null" >
+        i.QQ = #{qq,jdbcType=VARCHAR},
       </if>
-      <if test="phoneNum != null" >
-        #{phoneNum,jdbcType=VARCHAR},
-      </if>
-      <if test="nickname != null" >
-        #{nickname,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null" >
-        #{role,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiayk.xspringboot.model.user.User" >
-    update user
-    <set >
-      <if test="password != null" >
-        password = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="ucode != null" >
-        ucode = #{ucode,jdbcType=VARCHAR},
-      </if>
-      <if test="username != null" >
-        username = #{username,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null" >
-        email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="phoneNum != null" >
-        phonenum = #{phoneNum,jdbcType=VARCHAR},
-      </if>
-      <if test="nickname != null" >
-        NICKNAME = #{nickname,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null" >
-        role = #{role,jdbcType=VARCHAR},
+      <if test="other != null" >
+        i.other = #{other,jdbcType=VARCHAR},
       </if>
     </set>
-    where uid = #{uid,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiayk.xspringboot.model.user.User" >
-    update user
-    set password = #{password,jdbcType=VARCHAR},
-      ucode = #{ucode,jdbcType=VARCHAR},
-      username = #{username,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      phonenum = #{phoneNum,jdbcType=VARCHAR},
-      NICKNAME = #{nickname,jdbcType=VARCHAR},
-      role = #{role,jdbcType=VARCHAR}
-    where uid = #{uid,jdbcType=INTEGER}
+    where u.uid = i.uid
+    and u.username = #{username,jdbcType=VARCHAR};
   </update>
 </mapper>

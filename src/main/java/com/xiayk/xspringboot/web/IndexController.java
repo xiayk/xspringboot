@@ -33,7 +33,9 @@ public class IndexController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index1(Model model, HttpServletRequest request){
-        if (SecurityUtils.getSubject().getSession().getAttribute("user")!=null){
+        Object user = SecurityUtils.getSubject().getSession().getAttribute("user");
+        if (user!=null){
+            model.addAttribute("user",(User) user);
             return "index";
         }
         return "login";

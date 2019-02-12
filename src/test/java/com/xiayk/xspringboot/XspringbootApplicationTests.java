@@ -23,8 +23,20 @@ public class XspringbootApplicationTests {
 
     @Test
     public void contextLoads() {
-        User user = userService.findUserByUsername("admin");
-        System.out.println(user.getUid());
+        //User user = userService.findUserByUsername("admin");
+        User user = new User();
+        user.setUcode("true");
+        user.setUsername("user");
+        user.setSex("男");
+        user.setRole("user");
+        user.setNickname("TOMHEI");
+        user.setEmail("22249141@xiayk.com");
+        user.setAddres("湖南-长沙");
+        user.setPhoneNum("110");
+        user.setPassword("111");
+        user.setJob("运维");
+        user.setOther("无备注");
+        System.out.println(userService.insert(user));
     }
 }
 

@@ -38,8 +38,8 @@ public class AdminController {
     public RetResult getUser(String page, String limit, HttpServletResponse response){
         response.setHeader("Access-Control-Allow-Origin", "*");
         Map<String, String> map = new HashMap<>();
-        List<User> list = userInfoService.getUsers(page, limit);
-        return RetResponse.makeRsp(0,"res:ok",list,userService.getUserConut());
+        List<User> list = userService.getUsersLimit(page, limit);
+        return RetResponse.makeRsp(0,"res:ok",list,userService.getUsers().size());
     }
 
     @RequestMapping(value = "index")
@@ -53,7 +53,7 @@ public class AdminController {
         logger.info("正在删除："+uid+"的数据");
         int b = userInfoService.deleteByPrimaryKey(Integer.parseInt(uid));
         if (b > 0){
-            int a = userService.deleteByPrimaryKey(Integer.parseInt(uid));
+            int a = userService.delUserByUid(Integer.parseInt(uid));
             if (a > 0)
                 logger.info("删除"+ b +"条个人信息," + a + "条的数据");
                 return RetResponse.makeRsp(200,"res:ok");
@@ -68,7 +68,7 @@ public class AdminController {
         User user = (User)request.getSession().getAttribute("user");
         user.setUcode(isLock);
         logger.info("正在锁定账号:"+user.getUsername());
-        int a = userService.updateByPrimaryKey(user);
+        int a = userService.updateUserByUsername(user);
         if (a > 0){
             return RetResponse.makeRsp(200,user.getUsername() + "已锁定");
         }else{

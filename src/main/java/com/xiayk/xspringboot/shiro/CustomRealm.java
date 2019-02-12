@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by cdyoue on 2016/10/21.
+ *
  */
 @Component
 public class CustomRealm extends AuthorizingRealm {
@@ -37,7 +37,7 @@ public class CustomRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) throws AuthenticationException {
-        logger.info("权限认证:+"+principalCollection.toString());
+        logger.info("权限认证");
         String username = (String) SecurityUtils.getSubject().getPrincipal();
         User user = userService.findUserByUsername((String) principalCollection.getPrimaryPrincipal());
         logger.info("principalCollection:"+(String) principalCollection.getPrimaryPrincipal()+"--------  SecurityUtils:" +username);
@@ -63,11 +63,10 @@ public class CustomRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        logger.info("身份认证方法: +"  + authenticationToken.toString());
 
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         String userName=token.getUsername();
-        logger.info(userName+token.getPassword());
+        logger.info(userName + " - 身份认证");
 
         User user = userService.findUserByUsername(token.getUsername());
 
@@ -75,6 +74,8 @@ public class CustomRealm extends AuthorizingRealm {
             throw new AccountException("用户名不正确");
         else if (!user.getPassword().equals(new String((char[]) token.getCredentials())))
             throw new AccountException("密码不正确");
+
+        logger.info(userName + " - 认证成功, user加入session");
         Session session = SecurityUtils.getSubject().getSession();
         session.setAttribute("user", user);
         return new SimpleAuthenticationInfo(userName,user.getPassword(),getName());

@@ -28,8 +28,11 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/")
-    public String user(){
-        return "admin/index";
+    public String userIndex(HttpServletRequest request){
+        if (((User)request.getSession().getAttribute("user")).getRole().equals("admin"))
+            return "admin/index";
+        else
+            return "user/user";
     }
 
     @RequestMapping(value = "Info")
@@ -44,5 +47,10 @@ public class UserController {
         User user = (User)request.getSession().getAttribute("user");
         model.addAttribute("userInfo", user);
         return "user/Setting";
+    }
+
+    @RequestMapping(value = "{username}")
+    public String user(){
+        return "user/user";
     }
 }

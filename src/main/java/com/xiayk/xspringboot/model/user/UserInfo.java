@@ -17,6 +17,16 @@ public class UserInfo {
 
     private String other;
 
+    private String headurl;
+
+    public String getHeadurl() {
+        return headurl;
+    }
+
+    public void setHeadurl(String headurl) {
+        this.headurl = headurl;
+    }
+
     public Integer getIid() {
         return iid;
     }

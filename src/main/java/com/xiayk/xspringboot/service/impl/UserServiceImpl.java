@@ -8,7 +8,9 @@ import com.xiayk.xspringboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserService {
@@ -16,18 +18,27 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private UserInfoMapper userInfoMapper;
-
     @Override
-    public int getUserConut() {
-        return userMapper.getUserConut();
+    public User findUserByUid(Integer uid) {
+        return userMapper.findUserByUid(uid);
     }
 
     @Override
-    public List<User> findUsers(String pageNo, String pageSize) {
-        PageHelper.startPage(Integer.parseInt(pageNo), Integer.parseInt(pageSize));
-        return userMapper.findUsers();
+    public int delUserByUsername(String username) {
+        return userMapper.delUserByUsername(username);
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return userMapper.getUsers();
+    }
+
+    @Override
+    public List<User> getUsersLimit(String pageNo, String pageSize) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("page", Integer.parseInt(pageNo)-1);
+        map.put("limit", Integer.parseInt(pageSize));
+        return userMapper.getUsersLimit(map);
     }
 
     @Override
@@ -36,34 +47,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int deleteByPrimaryKey(Integer uid) {
-        return userMapper.deleteByPrimaryKey(uid);
+    public int delUserByUid(Integer uid) {
+        return userMapper.delUserByUid(uid);
     }
-
-    @Override
-    public int insertSelective(User record) {
-        return userMapper.insertSelective(record);
-    }
-
-
-    @Override
-    public User selectByPrimaryKey(Integer uid) {
-        return userMapper.selectByPrimaryKey(uid);
-    }
-
-    @Override
-    public int updateByPrimaryKeySelective(User record) {
-        return userMapper.updateByPrimaryKeySelective(record);
-    }
-
     @Override
     public int insert(User record) {
-        return userInfoMapper.insert(record);//添加用户信息
+        if (userMapper.findUserByUsername(record.getUsername())==null){
+            userMapper.insert(record);
+            return userMapper.updateUserByUsername(record);
+        }
+        return -1;
     }
 
     @Override
-    public int updateByPrimaryKey(User record) {
-        return userMapper.updateByPrimaryKey(record);
+    public int updateUserByUsername(User record) {
+        return userMapper.updateUserByUsername(record);
     }
 
+    @Override
+    public int updatePass(User record) {
+        return userMapper.updatePass(record);
+    }
 }
