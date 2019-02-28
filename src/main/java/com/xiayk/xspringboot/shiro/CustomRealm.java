@@ -37,11 +37,16 @@ public class CustomRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) throws AuthenticationException {
-        logger.info("权限认证");
+        logger.info("shiro权限认证");
         String username = (String) SecurityUtils.getSubject().getPrincipal();
         User user = userService.findUserByUsername((String) principalCollection.getPrimaryPrincipal());
-        logger.info("principalCollection:"+(String) principalCollection.getPrimaryPrincipal()+"--------  SecurityUtils:" +username);
-        String role = userService.findUserByUsername(username).getRole();
+        String role = user.getRole();
+        principalCollection.getPrimaryPrincipal();
+        String lock = user.getUcode();
+        //验证是否锁定
+        if (lock.equals("true")){
+            SecurityUtils.getSubject().logout();
+        }
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         Set<String> set = new HashSet<>();
         //需要将 role 封装到 Set 作为 info.setRoles() 的参数
@@ -64,10 +69,10 @@ public class CustomRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
 
+        logger.info("lost ===== "+SecurityUtils.getSubject().isRunAs());
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         String userName=token.getUsername();
         logger.info(userName + " - 身份认证");
-
         User user = userService.findUserByUsername(token.getUsername());
 
         if (user == null)
@@ -79,5 +84,9 @@ public class CustomRealm extends AuthorizingRealm {
         Session session = SecurityUtils.getSubject().getSession();
         session.setAttribute("user", user);
         return new SimpleAuthenticationInfo(userName,user.getPassword(),getName());
+    }
+
+    public String getUrl(){
+        return "";
     }
 }

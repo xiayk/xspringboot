@@ -2,6 +2,7 @@ package com.xiayk.xspringboot.config;
 
 import com.xiayk.xspringboot.shiro.CustomRealm;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import java.util.Map;
 public class ShiroConfig {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      * 过滤器默认权限表 {anon=anon, authc=authc, authcBasic=authcBasic, logout=logout,
      * noSessionCreation=noSessionCreation, perms=perms, port=port,
@@ -32,6 +34,7 @@ public class ShiroConfig {
      */
     @Bean
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
+        logger.info("Bean ==== shirFilter()");
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         // 必须设置 SecurityManager
         shiroFilterFactoryBean.setSecurityManager(securityManager);
@@ -43,24 +46,26 @@ public class ShiroConfig {
         // 设置拦截器
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         //游客，开发权限
-        filterChainDefinitionMap.put("/guest/**", "anon");
+        //filterChainDefinitionMap.put("/guest/**", "anon");
         //用户，需要角色权限 “user”
         //filterChainDefinitionMap.put("/user/**", "roles[user],roles[admin]");
         //管理员，需要角色权限 “admin”
         filterChainDefinitionMap.put("/admin/**", "roles[admin]");
         //开放登陆接口
+        filterChainDefinitionMap.put("/login/*","anon");
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/", "anon");
         filterChainDefinitionMap.put("/updatePass","anon");
         filterChainDefinitionMap.put("/register","anon");
         filterChainDefinitionMap.put("/test/**","anon");
+        filterChainDefinitionMap.put("/upload/*","anon");
         filterChainDefinitionMap.put("/layui/**", "anon");
         //其余接口一律拦截
         //主要这行代码必须放在所有权限设置的最后，不然会导致所有 url 都被拦截
         filterChainDefinitionMap.put("/**", "authc");
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        System.out.println("Shiro拦截器工厂类注入成功");
+        logger.info("Shiro拦截器工厂类注入成功");
         return shiroFilterFactoryBean;
     }
 
@@ -69,6 +74,7 @@ public class ShiroConfig {
      */
     @Bean
     public SecurityManager securityManager(CustomRealm customRealm) {
+        logger.info("Bean ==== securityManager()");
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // 设置realm.
         securityManager.setRealm(customRealm);

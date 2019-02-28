@@ -11,6 +11,7 @@ import io.github.biezhi.wechat.utils.StringUtils;
  * @Author: XiaYk
  * @create:2019-01-20
  **/
+
 public class WechatService{// extends WeChatBot {
 
 //    public WechatService(Config config){

@@ -1,10 +1,12 @@
 package com.xiayk.xspringboot.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.xiayk.xspringboot.dao.UserInfoMapper;
 import com.xiayk.xspringboot.dao.UserMapper;
 import com.xiayk.xspringboot.model.user.User;
 import com.xiayk.xspringboot.service.UserService;
+import com.xiayk.xspringboot.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,10 +55,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public int insert(User record) {
         if (userMapper.findUserByUsername(record.getUsername())==null){
+            record.setRegTime(FileUtil.getDate("time"));
             userMapper.insert(record);
             return userMapper.updateUserByUsername(record);
         }
         return -1;
+    }
+
+    @Override
+    public User findUserByPhoneNumber(String phoneNum) {
+        return userMapper.findUserByPhoneNumber(phoneNum);
     }
 
     @Override
@@ -67,5 +75,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public int updatePass(User record) {
         return userMapper.updatePass(record);
+    }
+
+    @Override
+    public PageInfo<User> getAllUser() {
+        List<User> list = userMapper.getAllUser();
+        PageInfo<User> p=new PageInfo<User>(list);
+        return p;
     }
 }

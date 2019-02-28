@@ -1,103 +1,48 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>后台管理</title>
     <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}">
-    <script src="http://code.jquery.com/jquery.js"></script>
     <script  src="../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
-    <script  type="text/javascript"  th:inline="javascript">
-        layui.use('table', function(){
-            var table = layui.table
-                ,form = layui.form;
-            //监听锁定操作
-            form.on('checkbox(lockDemo)', function(obj){
-                //layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
-                $.post("/admin/unLock",{isLock: obj.elem.checked}, function (res) {
-                    console.log(res);
-                    layer.msg(res.msg);
-                })
-                console.log(obj)
-            });
-            table.render({
-                elem: '#test'
-                ,url:'/admin/getUsers'
-                ,toolbar: '#toolbarDemo'
-                ,title: '用户数据表'
-                ,cols: /*<![CDATA[*/[[
-                    {type: 'checkbox'}
-                    ,{field:'username', width:100, title: '用户名', sort: true}
-                    ,{field:'nickname', width:100, title: '昵称'}
-                    ,{field:'sex', width:60, title: '性别'}
-                    ,{field:'email', width:170, title: '邮箱'}
-                    ,{field:'addres', title: '地址', width: 150}
-                    ,{field:'phoneNum', title: '电话号码', width: 150}
-                    ,{field:'job', title: '工作', width: 100}
-                    ,{field:'role', width:70, title: '权限', sort: true}
-                    ,{field:'other', minWidth:150, title: '备注'}
-                    ,{field:'ucode', title:'是否锁定', width:110}
-                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:120}
-                    /*]]>*/]]
-                ,page: true
-                ,limit: 15
-                ,loading: true
-                ,toolbar: true
-            });
-            //头工具栏事件
-            table.on('toolbar(test)', function(obj){
-                var checkStatus = table.checkStatus(obj.config.id);
-                switch(obj.event){
-                    case 'getCheckData':
-                        var data = checkStatus.data;
-                        layer.alert(JSON.stringify(data));
-                        break;
-                    case 'getCheckLength':
-                        var data = checkStatus.data;
-                        layer.msg('选中了：'+ data.length + ' 个');
-                        break;
-                    case 'isAll':
-                        layer.msg(checkStatus.isAll ? '全选': '未全选');
-                        break;
-                };
-            });
-
-            //监听行工具事件
-            table.on('tool(test)', function(obj){
-                var data = obj.data;
-                console.log(obj)
-                if(obj.event === 'del'){
-                    layer.confirm('真的删除行么', function(index){
-                        $.post("/admin/delUser",{uid:data.uid}, function (res) {
-                            console.log(res)
-                            if (res.code==200){
-                                obj.del();
-                                layer.close(index);
-                            } else {
-                                layer.msg("未知删除错误!")
-                            }
-                        });
-                    });
-                } else if(obj.event === 'edit'){
-                    layer.prompt({
-                        formType: 2
-                        ,value: data.email
-                    }, function(value, index){
-                        obj.update({
-                            password: value
-                        });
-                        layer.close(index);
-                    });
-                }
-            });
-        });
+    <script  type="text/javascript"  th:src="@{/layui/users.js}">
     </script>
 </head>
 <body>
-<table class="layui-hide" id="test" lay-filter="test"></table>
-
+<div class="layui-layout layui-layout-admin">
+<div class="layui-header">
+    <div class="layui-logo"><a th:href="@{/}">xWeb - XiaYk</a></div>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;">
+                <img th:src="${user.headurl}" class="layui-nav-img">
+                <span th:text="${user.nickname}"></span>
+            </a>
+            <dl class="layui-nav-child">
+                <dd><a th:href="@{'/user/'+${user.username}}">基本资料</a></dd>
+                <dd><a th:href="@{/user/Setting}">安全设置</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item">
+            <a th:href="@{/logOut}">注销</a>
+        </li>
+    </ul>
+</div>
+<table class="layui-hide" id="test" lay-filter="test">
+    <h2 align="center">用户管理</h2>
+</table>
+    <script type="text/html" id="checkboxTpl">
+        <!-- 这里的 checked 的状态只是演示 -->
+        <input type="checkbox" name="lock" value="{{d.uid}}" title="锁定" lay-filter="lockDemo" {{ d.ucode == 'true'?'checked' : '' }}>
+    </script>
+<script type="text/html" id="islock">
+    <a class="layui-btn" lay-event="islock">{{ucode}}</a>
+</script>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="sele">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">PASS</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
+</div>
 </body>
 </html>

@@ -18,11 +18,19 @@
     <result column="other" property="other" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    u.uid, u.password, u.ucode, u.username, u.email, u.phonenum, u.NICKNAME, u.role
+    u.uid, u.password, u.ucode, u.username, u.email, u.phonenum, u.NICKNAME, u.role, u.rid,u.regtime
   </sql>
   <sql id="Base_Column_List_userinfo" >
     i.iid, i.addres, i.sex, i.ip, i.job, i.QQ, i.other, i.headurl
   </sql>
+
+  <select id="getAllUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />,
+    <include refid="Base_Column_List_userinfo" />
+    from userinfo i inner join user u
+    on u.uid = i.uid
+  </select>
 
   <!--1,通过uid查找用户信息 userinfo and user 两表-->
   <select id="findUserByUid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -32,6 +40,18 @@
     from userinfo i inner join user u
     where u.uid = i.uid
     and u.uid = #{uid,jdbcType=INTEGER}
+    and ustatus>0
+  </select>
+
+  <!--手机号查询-->
+  <select id="findUserByPhoneNumber" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />,
+    <include refid="Base_Column_List_userinfo" />
+    from userinfo i inner join user u
+    where u.uid = i.uid
+    and u.phonenum = #{phoneNum,jdbcType=VARCHAR}
+    and ustatus>0
   </select>
 
   <!--2,分页获取所有用户信息 userinfo and user 表-->
@@ -41,6 +61,7 @@
     <include refid="Base_Column_List_userinfo" />
     from userinfo i inner join user u
     where u.uid = i.uid
+    and ustatus>0
     limit #{page,jdbcType=INTEGER},#{limit,jdbcType=INTEGER};
   </select>
 
@@ -51,7 +72,8 @@
     <include refid="Base_Column_List_userinfo" />
     from userinfo i inner join user u
     where u.uid = i.uid
-    and username = #{username, jdbcType=VARCHAR};
+    and username = #{username, jdbcType=VARCHAR}
+    and ustatus>0;
   </select>
 
   <!--4,查找所有用户 user表-->
@@ -60,7 +82,8 @@
     <include refid="Base_Column_List" />,
     <include refid="Base_Column_List_userinfo" />
     from userinfo i inner join user u
-    where u.uid = i.uid;
+    where u.uid = i.uid and ustatus>0;
+
   </select>
 
   <!--5,通过uid删除用户 user 表-->
@@ -79,10 +102,10 @@
   <insert id="insert" parameterType="com.xiayk.xspringboot.model.user.User" >
     insert into user (uid, password, ucode,
       username, email, phonenum,
-      NICKNAME, role)
+      NICKNAME, role, rid, regtime)
     values (#{uid,jdbcType=INTEGER}, #{password,jdbcType=VARCHAR}, #{ucode,jdbcType=VARCHAR},
       #{username,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{phoneNum,jdbcType=VARCHAR},
-      #{nickname,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR});
+      #{nickname,jdbcType=VARCHAR}, #{role,jdbcType=VARCHAR},#{rid,jdbcType=INTEGER}, #{regtime,jdbcType=VARCHA);
   </insert>
 
   <!--8,修改用户密码-->
@@ -104,8 +127,14 @@
       <if test="phoneNum != null" >
         u.phonenum = #{phoneNum,jdbcType=VARCHAR},
       </if>
+      <if test="headurl != null" >
+        i.headurl = #{headurl,jdbcType=VARCHAR},
+      </if>
       <if test="nickname != null" >
         u.NICKNAME = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="rid != null" >
+        u.rid = #{rid,jdbcType=VARCHAR},
       </if>
       <if test="role != null" >
         u.role = #{role,jdbcType=VARCHAR},
@@ -132,4 +161,5 @@
     where u.uid = i.uid
     and u.username = #{username,jdbcType=VARCHAR};
   </update>
+
 </mapper>

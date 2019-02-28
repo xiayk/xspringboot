@@ -7,6 +7,10 @@ import java.util.Map;
 
 public interface UserMapper {
 
+    List<User> getAllUser();
+
+    User findUserByPhoneNumber(String phoneNum);
+
     /**
      * 通过uid查找用户
      * @param uid

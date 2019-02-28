@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiayk.xspringboot.dao.RoleMapper" >
+    <resultMap id="BaseResultMap" type="com.xiayk.xspringboot.model.user.Role" >
+        <id column="rid" property="rid" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="rname" property="rname" jdbcType="VARCHAR" />
+        <result column="roledesc" property="roleDesc" jdbcType="VARCHAR" />
+        <result column="permissions" property="permissions" jdbcType="VARCHAR" />
+        <result column="createtime" property="createTime" jdbcType="VARCHAR" />
+        <result column="updatetime" property="updateTime" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+      rid, rname, name,roledesc, permissions, createtime, updatetime.rolestatus
+    </sql>
+    <select id="getRoleList" resultMap="BaseResultMap" parameterType="Map">
+        select
+        <include refid="Base_Column_List" />,
+        from xweb_role
+    </select>
+
+    <select id="findRoleById" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />,
+         from xweb_role
+        where rid = #{rid};
+    </select>
+
+    <select id="getRoles">
+
+    </select>
+
+    <update id="updateRole">
+        UPDATE xweb_role
+        SET
+        <if test="roleName != null">rname = #{rname},</if>
+        <if test="roleDesc != null">roledesc = #{roledesc},</if>
+        <if test="permissions != null">permissions = #{permissions},</if>
+        <if test="updateTime != null">updatetime = #{updateTime}</if>
+        where
+        rid = #{rid}
+    </update>
+</mapper>

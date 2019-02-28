@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Login - XiaYk</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" href="../static/layui/css/layui.css"  media="all">
+    <link rel="stylesheet" href="/layui/css/layui.css;jsessionid=DC56AFB72EC3290F9E988D5B34357A4A"  media="all">
     <style>
         .layui-input{
             text-align: center;
@@ -57,7 +57,7 @@
         </div>
     </form>
 </div>
-<script type="text/javascript" th:src="@{/layui/layui.js}"></script>
-<script type="text/javascript" th:src="@{/layui/login.js}"></script>
+<script type="text/javascript" src="/layui/layui.js;jsessionid=DC56AFB72EC3290F9E988D5B34357A4A"></script>
+<script type="text/javascript" src="/layui/login.js;jsessionid=DC56AFB72EC3290F9E988D5B34357A4A"></script>
 </body>
 </html>

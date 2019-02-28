@@ -1,11 +1,14 @@
 package com.xiayk.xspringboot.service;
 
+import com.github.pagehelper.PageInfo;
 import com.xiayk.xspringboot.model.user.User;
 
 import java.util.List;
 import java.util.Map;
 
 public interface UserService {
+
+    User findUserByPhoneNumber(String phoneNum);
     /**
      * 通过uid查找用户
      * @param uid
@@ -68,4 +71,7 @@ public interface UserService {
      * @return
      */
     int updatePass(User record);
+
+
+    PageInfo<User> getAllUser();
 }

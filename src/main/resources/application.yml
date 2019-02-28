@@ -9,11 +9,24 @@ spring:
   thymeleaf:
     cache: false
     encoding: UTF-8
+  mail:
+    host: smtp.exmail.qq.com
+    username: admin@xiayk.cn
+    password: EPGWwiTVdkmJRDuS
+    default-encoding: UTF-8
+    protocol: smtp
+
+#smtp.exmail.qq.com
+#admin@xiayk.cn
+#VF3DQdTKsL64LsHj
+mail:
+    fromMail:
+      addr: admin@xiayk.cn
 #  main:
 #    allow-bean-definition-overriding: true
-
 mybatis:
   mapper-locations: classpath:mapping/*.xml
+
 
 
 

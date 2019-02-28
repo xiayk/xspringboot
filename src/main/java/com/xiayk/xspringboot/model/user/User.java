@@ -11,6 +11,10 @@ public class User extends UserInfo {
 
     private String email;
 
+    private String regtime;
+
+    private Integer ustatus;
+
     private String phoneNum;
 
     private String nickname;
@@ -18,6 +22,32 @@ public class User extends UserInfo {
     private String role;
 
     private UserInfo userInfo;
+
+    private Integer rid;
+
+    public Integer getUstatus() {
+        return ustatus;
+    }
+
+    public void setUstatus(Integer ustatus) {
+        this.ustatus = ustatus;
+    }
+
+    public String getRegTime() {
+        return regtime;
+    }
+
+    public void setRegTime(String regTime) {
+        this.regtime = regTime;
+    }
+
+    public Integer getRid() {
+        return rid;
+    }
+
+    public void setRid(Integer rid) {
+        this.rid = rid;
+    }
 
     public UserInfo getUserInfo() {
         return userInfo;
